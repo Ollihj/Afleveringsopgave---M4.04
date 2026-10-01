@@ -57,13 +57,13 @@ export RESGRP="IBasSupportRG"
 export DBACCOUNT="ibas-db-account-$RANDOM"
 export DATABASE="IBasSupportDB"
 export CONTAINER="ibassupport"
-export LOCATION="northeurope"
+export LOCATION="germanywestcentral"   # Azure for Students tillader kun visse regioner
 
 # Ressourcegruppe
 az group create --name $RESGRP --location $LOCATION
 
 # CosmosDB konto (free tier / Azure for Students)
-az cosmosdb create --name $DBACCOUNT --resource-group $RESGRP --enable-free-tier true
+az cosmosdb create --name $DBACCOUNT --resource-group $RESGRP --enable-free-tier true \n    --locations regionName=$LOCATION
 
 # Database
 az cosmosdb sql database create --account-name $DBACCOUNT \
