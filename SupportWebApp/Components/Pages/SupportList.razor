@@ -1,0 +1,69 @@
+@page "/supportlist"
+@attribute [StreamRendering]
+@using SupportWebApp.Models
+@using SupportWebApp.Services
+@inject CosmosService CosmosService
+
+<PageTitle>Henvendelser</PageTitle>
+
+<h1>Alle henvendelser</h1>
+
+<a class="btn btn-primary mb-3" href="createsupport">+ Opret ny henvendelse</a>
+
+@if (errorMessage != "")
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (messages == null)
+{
+    <p><em>Henter henvendelser...</em></p>
+}
+else if (messages.Count == 0)
+{
+    <p>Der er ingen henvendelser endnu.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Dato</th>
+                <th>Navn</th>
+                <th>Email</th>
+                <th>Telefon</th>
+                <th>Kategori</th>
+                <th>Beskrivelse</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (SupportMessage m in messages)
+            {
+                <tr>
+                    <td>@m.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>@m.Name</td>
+                    <td>@m.Email</td>
+                    <td>@m.Phone</td>
+                    <td>@m.Category</td>
+                    <td>@m.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<SupportMessage>? messages;
+    private string errorMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            messages = await CosmosService.GetAllSupportMessagesAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Kunne ikke hente henvendelser: " + ex.Message;
+        }
+    }
+}

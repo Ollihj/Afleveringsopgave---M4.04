@@ -1,0 +1,89 @@
+@page "/createsupport"
+@rendermode InteractiveServer
+@using SupportWebApp.Models
+@using SupportWebApp.Services
+@inject CosmosService CosmosService
+
+<PageTitle>Opret henvendelse</PageTitle>
+
+<h1>Opret supporthenvendelse</h1>
+
+<EditForm Model="message" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label class="form-label">Navn</label>
+        <InputText class="form-control" @bind-Value="message.Name" />
+        <ValidationMessage For="() => message.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <InputText class="form-control" @bind-Value="message.Email" />
+        <ValidationMessage For="() => message.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Telefon</label>
+        <InputText class="form-control" @bind-Value="message.Phone" />
+        <ValidationMessage For="() => message.Phone" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Kategori</label>
+        <InputSelect class="form-select" @bind-Value="message.Category">
+            <option value="">-- Vælg kategori --</option>
+            <option value="teknisk">Teknisk spørgsmål om køb af ny cykel</option>
+            <option value="reservedele">Reservedele (gør-det-selv)</option>
+            <option value="forslag">Forslag til ændringer/nye features</option>
+            <option value="forhandler">Hvor ligger nærmeste forhandler</option>
+            <option value="katalog">Send mig det nyeste katalog</option>
+            <option value="andet">Andet</option>
+        </InputSelect>
+        <ValidationMessage For="() => message.Category" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Beskrivelse</label>
+        <InputTextArea class="form-control" rows="5" @bind-Value="message.Description" />
+        <ValidationMessage For="() => message.Description" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Opret henvendelse</button>
+</EditForm>
+
+@if (statusMessage != "")
+{
+    <div class="alert alert-success mt-3">
+        @statusMessage <a href="supportlist">Se alle henvendelser</a>
+    </div>
+}
+
+@if (errorMessage != "")
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@code {
+    private SupportMessage message = new SupportMessage();
+    private string statusMessage = "";
+    private string errorMessage = "";
+
+    private async Task HandleValidSubmit()
+    {
+        statusMessage = "";
+        errorMessage = "";
+
+        try
+        {
+            message.CreatedAt = DateTime.Now;
+            await CosmosService.AddSupportMessageAsync(message);
+            statusMessage = "Henvendelsen er oprettet!";
+            message = new SupportMessage();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Kunne ikke gemme henvendelsen: " + ex.Message;
+        }
+    }
+}
