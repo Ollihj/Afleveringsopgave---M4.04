@@ -1,7 +1,5 @@
 # IBAS Support – Blazor WebApp med Azure CosmosDB
 
-<!-- Gruppe: tilføj jeres navne her -->
-
 ## Formål
 
 Projektet er afleveringsopgave **M4.04** i Cloud Computing. Det er en .NET Blazor WebApp til IBAS Cykler, hvor kunder kan oprette supporthenvendelser. Henvendelserne gemmes som JSON-dokumenter i en **Azure CosmosDB NoSQL** database (oprettet i M4.03 ud fra datamodellen i M4.02).
@@ -112,6 +110,7 @@ export CosmosDb__ConnectionString="AccountEndpoint=...;AccountKey=...;"
 - Side med oversigt over alle henvendelser
 - Navigation mellem siderne, ny forside, Counter- og Weather-siderne fjernet
 - Connection string holdt ude af Git med user-secrets
+- Testet lokalt: oprettelse, validering, visning på listen og navigation virker
 
 **Det mangler:**
 
